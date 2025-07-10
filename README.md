@@ -23,12 +23,12 @@ Alternatively, you can use our JupyterLab environment at https://labs.gtkcyber.c
 
 #### Github Structure
 
-- answers (answers notebooks/solutions to all exercises and more)
-- data (all data files)
-- img (logo and screenshots)
-- notebooks (all exercises)
-  - lite-code:  A version of the notebooks for non-coders.
-- slides (all slides as pdf)
+- `answers/` (answers notebooks/solutions to all exercises and more)
+- `data/` (all data files)
+- `img/` (logo and screenshots)
+- `notebooks/` (all exercises)
+- `notebooks/lite-code/`:  A version of the notebooks for non-coders.
+- `slides/` (all slides as pdf)
 
 
 ### Recommended Readings
