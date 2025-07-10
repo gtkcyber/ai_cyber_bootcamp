@@ -15,10 +15,14 @@ We recommend either:
 
 Alternatively, you can use our JupyterLab environment at https://labs.gtkcyber.com. 
 
+## AI Usage
+For this course, you will need an OpenAI API key.  You can get one by creating an account at https://openai.com.  You may have to set up billing for this service.
+
+
 ### Instructors
 
 - Charles Givre - Data Scientist:  charles.givre@gtkcyber.com
-- Summer Rankin - Instuctor & Data Scientist: summer@gtkcyber.com
+- Summer Rankin - Instructor & Data Scientist: summer@gtkcyber.com
 
 #### Github Structure
 
