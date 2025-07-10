@@ -3,8 +3,7 @@
 
 ### 2025 Trainings Presented by GTK Cyber
 
-GTK Cyber [www.gtkcyber.com](https://www.gtkcyber.com) was founded to bridge the gap between Data Science and Cyber Security and not
-only provide high standard hands-on trainings, but introduce students to the most cutting-edge technologies and advancements in artificial intelligence, all with a focus on direct applicability to cyber security.
+GTK Cyber [www.gtkcyber.com](https://www.gtkcyber.com) was founded to bridge the gap between Data Science and Cyber Security and not only provide high standard hands-on trainings, but introduce students to the most cutting-edge technologies and advancements in artificial intelligence, all with a focus on direct applicability to cyber security.
 
 ### Setting Up Your Environment
 To run the exercises in the course, you will need an environment which can view Jupyter Notebooks and Python version 3.11 or greater. 
