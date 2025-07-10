@@ -3,6 +3,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+anaconda_projects/
 .ipynb_checkpoints/
 
 # C extensions
