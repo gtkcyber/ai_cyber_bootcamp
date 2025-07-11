@@ -29,8 +29,8 @@ For this course, you will need an OpenAI API key.  You can get one by creating a
 - `answers/` (answers notebooks/solutions to all exercises and more)
 - `data/` (all data files)
 - `img/` (logo and screenshots)
+- `lite-code/`:  (A version of the notebooks for non-coders)
 - `notebooks/` (all exercises)
-- `notebooks/lite-code/`:  A version of the notebooks for non-coders.
 - `slides/` (all slides as pdf)
 
 
