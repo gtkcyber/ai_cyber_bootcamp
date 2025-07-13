@@ -4,3 +4,7 @@ matplotlib
 apache-log-parser
 ua-parser
 user-agents
+sentence-transformers
+sqlglot
+flash-attention
+yellowbrick
