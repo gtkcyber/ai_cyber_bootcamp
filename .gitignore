@@ -3,6 +3,8 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+experiments/
+
 anaconda_projects/
 .ipynb_checkpoints/
 
