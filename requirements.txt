@@ -9,3 +9,8 @@ sqlglot
 flash-attention
 yellowbrick
 openai
+fasttext
+torch
+torchvision
+torchaudio
+sklearn
