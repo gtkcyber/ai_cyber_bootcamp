@@ -15,3 +15,6 @@ torchvision
 torchaudio
 sklearn
 tpot
+langchain
+langchain-community
+ydata-profiling
