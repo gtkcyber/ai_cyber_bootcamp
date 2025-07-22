@@ -27,10 +27,10 @@ chart_tab, table_tab = st.tabs(["Chart", "Data"])
 
 # Next create a dataframe with a filter by industry that breaks down the infected host total by botfam.
 with chart_tab:
-    chart_data = # Create a dataframe 
+    chart_data = # Create a dataframe
     st.bar_chart(chart_data)
 
 # Now in the table tab, create a data frame of the raw data.  If you want you can apply the filter from the selectbox
 # to the data table as well.
 with table_tab:
-    st.dataframe(raw_data[raw_data['industry'] == selected_industry], hide_index=True)
+    st.dataframe(<FILTERED DATAFRAME HERE... >, hide_index=True)
