@@ -18,3 +18,4 @@ tpot
 langchain
 langchain-community
 ydata-profiling
+pandasai
