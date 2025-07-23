@@ -19,3 +19,5 @@ langchain
 langchain-community
 ydata-profiling
 pandasai
+pydotplus
+scipy

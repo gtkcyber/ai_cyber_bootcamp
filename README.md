@@ -32,6 +32,7 @@ For this course, you will need an OpenAI API key.  You can get one by creating a
 - `lite-code/`:  (A version of the notebooks for non-coders)
 - `notebooks/` (all exercises)
 - `slides/` (all slides as pdf)
+- `streamlit_examples/` Example interactive applications with Streamlit
 
 
 ### Recommended Readings
