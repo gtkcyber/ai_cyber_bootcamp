@@ -21,3 +21,5 @@ ydata-profiling
 pandasai
 pydotplus
 scipy
+adversarial-robustness-toolbox
+
