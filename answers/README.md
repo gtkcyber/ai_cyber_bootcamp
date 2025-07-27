@@ -14,8 +14,9 @@ Notebooks/Solutions to exercises:
 - Worksheet 5.4 - Automate it All! - Answers.ipynb
 - Worksheet 6.0 - Clustering - Answers.ipynb
 - Worksheet 7.0 - Anomaly Detection - Answers.ipynb
-- Worksheet 8.0 - Hunting with Data Science - Answers.ipynb
-- Worksheet 9.0 - Featureless Deep Learning URL - Answers.ipynb
+- Classification with Embeddings.ipynb
+- Deep Learning CNN Fingerprints - Answers.ipynb
+- Deep Learning RNN URL - Answers.ipynb
 - Worksheet 10.1 - Using GPT for Anomaly Detection - Answers.ipynb
 - Worksheet 10.2 - Exploratory Data Analysis with AI - Answers.ipynb
 - Worksheet 11.0 - Attacking AI - Answers.ipynb
