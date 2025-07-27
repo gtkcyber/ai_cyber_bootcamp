@@ -16,10 +16,14 @@ torchaudio
 sklearn
 tpot
 langchain
+langchain-openai
 langchain-community
 ydata-profiling
 pandasai
 pydotplus
 scipy
 adversarial-robustness-toolbox
-
+pmdarima
+statsmodels
+prophet
+requests
