@@ -1,3 +1,10 @@
+# gtk
+*/log_dir/
+/notebooks/*.keras
+/anwers/*.keras
+/lite_code_notebooks/*.keras
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
