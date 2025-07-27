@@ -26,12 +26,14 @@ For this course, you will need an OpenAI API key.  You can get one by creating a
 
 #### Github Structure
 
+- `ai_examples`: Example code from the AI modules.
 - `answers/` (answers notebooks/solutions to all exercises and more)
 - `data/` (all data files)
 - `img/` (logo and screenshots)
 - `lite-code/`:  (A version of the notebooks for non-coders)
 - `notebooks/` (all exercises)
 - `slides/` (all slides as pdf)
+- `streamlit_examples/` Example interactive applications with Streamlit
 
 
 ### Recommended Readings
