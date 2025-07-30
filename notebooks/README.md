@@ -1,5 +1,5 @@
-# Applied Data Science for Security Professionals
-### BlackHat 2023 Trainings presented by GTK Cyber
+# AI Cyber Bootcamp
+### BlackHat 2025 Trainings presented by GTK Cyber
 
 Notebooks/Exercises:
 
