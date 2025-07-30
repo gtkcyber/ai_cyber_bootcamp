@@ -1,5 +1,5 @@
-# Applied Data Science for Security Professionals
-### BlackHat 2023 Trainings presented by GTK Cyber
+# AI Cyber Bootcamp
+### BlackHat 2025 Trainings presented by GTK Cyber
 
 Notebooks/Solutions to exercises:
 
@@ -18,6 +18,8 @@ Notebooks/Solutions to exercises:
 - Deep Learning CNN Fingerprints - Answers.ipynb
 - Deep Learning RNN URL - Answers.ipynb
 - Classification with Embeddings.ipynb
+- AI RAG CVEs.ipynb
 - Worksheet 10.1 - Using GPT for Anomaly Detection - Answers.ipynb
 - Worksheet 10.2 - Exploratory Data Analysis with AI - Answers.ipynb
 - Worksheet 11.0 - Attacking AI - Answers.ipynb
+- automate_ml.py
