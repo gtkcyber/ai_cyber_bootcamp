@@ -1,171 +1,157 @@
+import streamlit as st
+import requests
+import datetime
+import pandas as pd
+from langchain.tools import tool
+from langchain.chat_models import ChatOpenAI
+from langchain.agents import initialize_agent, AgentType
+from langchain.memory import ConversationBufferMemory
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
-import requests
-import streamlit as st
-from langchain_openai import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType
-from langchain.tools import tool
-from langchain.memory import ConversationBufferMemory
-from datetime import datetime, timedelta
-import json
 
-NVD_API_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+# -------------------------------
+# 1. NIST CVE Query Functions
+# -------------------------------
+NVD_API = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 
-# --------------------------
-# Helper: Date parameters
-# --------------------------
-def _date_params():
-    """Return pubStartDate and pubEndDate query params for the last 2 years."""
-    end_date = datetime.utcnow()
-    start_date = end_date - timedelta(days=2*365)
-    return {
-        "pubStartDate": start_date.strftime("%Y-%m-%dT00:00:00.000"),
-        "pubEndDate": end_date.strftime("%Y-%m-%dT00:00:00.000")
+
+def fetch_recent_cves(product_name: str, days: int = 120):
+    """Fetch recent CVEs for a given product name within last N days and return DataFrame."""
+    end_date = datetime.datetime.utcnow()
+    start_date = end_date - datetime.timedelta(days=days)
+
+    params = {
+        "keywordSearch": product_name,
+        "pubStartDate": start_date.strftime("%Y-%m-%dT%H:%M:%S.000"),
+        "pubEndDate": end_date.strftime("%Y-%m-%dT%H:%M:%S.000"),
     }
 
-# --------------------------
-# Tools (always return JSON)
-# --------------------------
-@tool("summarize_cve", return_direct=False)
-def summarize_cve(cve_id: str) -> str:
-    """Summarize the details of a specific CVE from the NVD database."""
-    try:
-        params = {"cveId": cve_id, **_date_params()}
-        response = requests.get(NVD_API_URL, params=params)
-        if response.status_code == 200:
-            data = response.json()
-            vulns = data.get("vulnerabilities", [])
-            if not vulns:
-                return json.dumps({"type": "error", "message": f"No details found for {cve_id} in the last 2 years."})
+    r = requests.get(NVD_API, params=params)
+    r.raise_for_status()
+    data = r.json()
 
-            cve_item = vulns[0]["cve"]
-            description = cve_item.get("descriptions", [{}])[0].get("value", "No description available.")
-            metrics = cve_item.get("metrics", {})
-            severity, score = "N/A", "N/A"
+    if "vulnerabilities" not in data:
+        return None
 
-            if "cvssMetricV31" in metrics:
-                cvss = metrics["cvssMetricV31"][0]["cvssData"]
-                severity = cvss.get("baseSeverity", "N/A")
-                score = cvss.get("baseScore", "N/A")
-
-            return json.dumps({
-                "type": "cve_summary",
-                "cve_id": cve_id,
-                "severity": severity,
-                "score": score,
-                "description": description
-            })
-        else:
-            return json.dumps({"type": "error", "message": f"Error querying NVD API: {response.status_code}"})
-    except Exception as e:
-        return json.dumps({"type": "error", "message": f"Exception occurred: {e}"})
-
-
-@tool("recent_cves_for_product", return_direct=False)
-def recent_cves_for_product(product_name: str) -> str:
-    """Get the most recent CVEs related to a product name from the NVD database."""
-    try:
-        params = {"keywordSearch": product_name,
-                  "resultsPerPage": 5,
-                  **_date_params()
-                  }
-        response = requests.get(NVD_API_URL, params=params)
-        if response.status_code == 200:
-            data = response.json()
-            vulns = data.get("vulnerabilities", [])
-            if not vulns:
-                return json.dumps({
-                    "type": "error",
-                    "message": f"No recent CVEs found for product '{product_name}' in the last 2 years."
-                })
-
-            results = []
-            for v in vulns:
-                cve_id = v["cve"]["id"]
-                desc = v["cve"]["descriptions"][0]["value"]
-                results.append({"cve_id": cve_id, "description": desc})
-
-            return json.dumps({
-                "type": "product_cves",
-                "product": product_name,
-                "cves": results
-            })
-        else:
-            return json.dumps({
-                "type": "error",
-                "message": f"Error querying NVD API: {response.status_code}: {response.text} \n {params}"
-            })
-    except Exception as e:
-        print(params)
-        return json.dumps({
-            "type": "error",
-            "message": f"Exception occurred: {e}"
+    rows = []
+    for item in data["vulnerabilities"][:10]:  # limit to 10
+        cve_id = item["cve"]["id"]
+        description = item["cve"]["descriptions"][0]["value"]
+        published = item["cve"]["published"]
+        severity = "N/A"
+        score = "N/A"
+        if "metrics" in item["cve"]:
+            metrics = item["cve"]["metrics"].get("cvssMetricV31", [{}])[0]
+            if metrics:
+                severity = metrics.get("cvssData", {}).get("baseSeverity", "N/A")
+                score = metrics.get("cvssData", {}).get("baseScore", "N/A")
+        rows.append({
+            "CVE ID": f"[{cve_id}](https://nvd.nist.gov/vuln/detail/{cve_id})",
+            "Published": published.split("T")[0],
+            "Severity": severity,
+            "Score": score,
+            "Description": description,
         })
 
-# --------------------------
-# LangChain Agent with Memory
-# --------------------------
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=os.getenv("OPENAI_KEY"))
+    return pd.DataFrame(rows)
+
+
+def fetch_cve_summary(cve_id: str):
+    """Fetch summary for a given CVE ID."""
+    r = requests.get(NVD_API, params={"cveId": cve_id})
+    r.raise_for_status()
+    data = r.json()
+
+    if "vulnerabilities" not in data or len(data["vulnerabilities"]) == 0:
+        return f"No information found for {cve_id}."
+
+    cve = data["vulnerabilities"][0]["cve"]
+    description = cve["descriptions"][0]["value"]
+    return f"**[{cve_id}](https://nvd.nist.gov/vuln/detail/{cve_id})**: {description}"
+
+
+# -------------------------------
+# 2. LangChain Tools and Agent
+# -------------------------------
+@tool("get_recent_cves", return_direct=True)
+def get_recent_cves_tool(product_name: str) -> str:
+    """Get the most recent CVEs for a given product in the last 120 days as a table."""
+    df = fetch_recent_cves(product_name, 120)
+    if df is None or df.empty:
+        return f"No recent CVEs found for {product_name}."
+    # Store the dataframe in session to display rich table
+    st.session_state["latest_table"] = df
+    return f"Here are the most recent CVEs for **{product_name}**:"
+
+
+@tool("summarize_cve", return_direct=True)
+def summarize_cve_tool(cve_id: str) -> str:
+    """Summarize a given CVE ID."""
+    return fetch_cve_summary(cve_id)
+
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key=os.environ["OPENAI_KEY"])
+tools = [get_recent_cves_tool, summarize_cve_tool]
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-tools = [summarize_cve, recent_cves_for_product]
 
 agent = initialize_agent(
-    tools=tools,
-    llm=llm,
+    tools,
+    llm,
+    agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
     memory=memory,
-    agent=AgentType.OPENAI_FUNCTIONS,
     verbose=True
 )
 
-# --------------------------
-# Streamlit UI
-# --------------------------
-st.set_page_config(page_title="🛡️ CVE Intelligence Demo", page_icon="🛡️")
-st.title("🛡️ CVE Intelligence Demo")
-st.markdown("Ask me about **any CVE** or a **product's recent vulnerabilities**. (Results are filtered to the last **2 years**.)")
+# -------------------------------
+# 3. Streamlit UI
+# -------------------------------
+st.set_page_config(page_title="CVE Chatbot", page_icon="🛡️", layout="wide")
+st.title("🛡️ CVE Chatbot (NIST/NVD)")
 
-if "history" not in st.session_state:
-    st.session_state.history = []
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "latest_table" not in st.session_state:
+    st.session_state.latest_table = None
 
-user_input = st.text_input("🔎 Your query:", placeholder="e.g. What is CVE-2023-21716? or Recent CVEs for OpenSSL")
+# Display past messages
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+        # If a table was triggered by this assistant message, show it
+        if msg["role"] == "assistant" and st.session_state.latest_table is not None:
+            styled_df = st.session_state.latest_table.style.applymap(
+                lambda val: "color:red" if val == "CRITICAL" else (
+                            "color:orange" if val == "HIGH" else (
+                            "color:blue" if val == "MEDIUM" else "color:green"
+                            )
+                ),
+                subset=["Severity"]
+            )
+            st.dataframe(styled_df, use_container_width=True)
 
-if st.button("Ask") and user_input:
-    with st.spinner("🔎 Thinking..."):
-        result = agent.run(user_input)
-        st.session_state.history.append((user_input, result))
+# Chat input
+if prompt := st.chat_input("Ask me about CVEs..."):
+    # Show user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-# --------------------------
-# Result Display (Rich)
-# --------------------------
-severity_color = {
-    "CRITICAL": "🔴",
-    "HIGH": "🟠",
-    "MEDIUM": "🟡",
-    "LOW": "🟢"
-}
-
-for query, result in reversed(st.session_state.history):
-    st.markdown(f"### ❓ {query}")
-
-    # Try to parse JSON result
-    try:
-        parsed = json.loads(result)
-    except:
-        st.info(result)
-        continue
-
-    if parsed["type"] == "error":
-        st.error(parsed["message"])
-
-    elif parsed["type"] == "cve_summary":
-        sev = parsed["severity"].upper()
-        badge = severity_color.get(sev, "⚪")
-        with st.expander(f"{badge} **{parsed['cve_id']}** (Severity: {parsed['severity']} | Score: {parsed['score']})", expanded=True):
-            st.write(parsed["description"])
-
-    elif parsed["type"] == "product_cves":
-        st.markdown(f"### 🔍 Recent CVEs for **{parsed['product']}**")
-        for cve in parsed["cves"]:
-            with st.expander(f"**{cve['cve_id']}**"):
-                st.write(cve["description"])
+    # Agent response
+    with st.chat_message("assistant"):
+        response = agent.run(prompt)
+        st.markdown(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        # If table is set, display it
+        if st.session_state.latest_table is not None:
+            styled_df = st.session_state.latest_table.style.applymap(
+                lambda val: "color:red" if val == "CRITICAL" else (
+                            "color:orange" if val == "HIGH" else (
+                            "color:blue" if val == "MEDIUM" else "color:green"
+                            )
+                ),
+                subset=["Severity"]
+            )
+            st.dataframe(styled_df, use_container_width=True)
+            st.session_state.latest_table = None

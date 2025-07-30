@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# ========================================
+# Cross-platform virtualenv setup script
+# Works on Linux/macOS (bash) and Windows (PowerShell)
+# ========================================
+
+set -e
+
+echo "====================================="
+echo "   Python 3.11 Virtualenv Setup"
+echo "====================================="
+
+# Detect OS
+OS=$(uname 2>/dev/null || echo "Windows")
+
+if [[ "$OS" == "Linux" || "$OS" == "Darwin" ]]; then
+    # ---------- macOS / Linux ----------
+    if ! command -v python3.11 &>/dev/null; then
+        echo "Error: python3.11 not found in PATH."
+        exit 1
+    fi
+
+    echo "Creating virtual environment..."
+    python3.11 -m venv venv
+
+    echo "Activating virtual environment..."
+    source venv/bin/activate
+
+    echo "Upgrading pip..."
+    pip install --upgrade pip
+
+    if [[ -f requirements.txt ]]; then
+        echo "Installing dependencies from requirements.txt..."
+        pip install -r requirements.txt
+    else
+        echo "requirements.txt not found. Skipping."
+    fi
+
+    echo
+    echo "Setup complete! Virtualenv is now active."
+
+else
+    # ---------- Windows (PowerShell) ----------
+    # Relaunch in PowerShell
+    echo "Detected Windows. Running PowerShell version..."
+
+    pwsh -NoProfile -Command '
+        $ErrorActionPreference = "Stop"
+        if (-not (Get-Command python3.11 -ErrorAction SilentlyContinue)) {
+            Write-Host "Error: python3.11 not found in PATH." -ForegroundColor Red
+            exit 1
+        }
+
+        Write-Host "Creating virtual environment..."
+        python3.11 -m venv venv
+
+        $venvPath = ".\venv\Scripts\Activate.ps1"
+        if (-not (Test-Path $venvPath)) {
+            Write-Host "Error: activation script not found." -ForegroundColor Red
+            exit 1
+        }
+
+        Write-Host "Activating virtual environment..."
+        . $venvPath
+
+        Write-Host "Upgrading pip..."
+        pip install --upgrade pip
+
+        if (Test-Path "requirements.txt") {
+            Write-Host "Installing dependencies from requirements.txt..."
+            pip install -r requirements.txt
+        } else {
+            Write-Host "requirements.txt not found. Skipping."
+        }
+
+        Write-Host "`nSetup complete! You are now inside the virtual environment."
+        Write-Host "To activate later: .\venv\Scripts\Activate.ps1"
+        Wait-Event -Timeout 2
+    '
+fi
