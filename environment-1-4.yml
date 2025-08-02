@@ -1,0 +1,27 @@
+name: gtk-bh-1-4                                                                                                                               
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - jupyter
+  - pandas
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - scipy
+  - statsmodels
+  - pip
+  - ipywidgets
+  - ipykernel
+  - jupyter
+  - ydata-profiling=4.16.1
+  - annotated-types=0.7.0
+  - llvmlite=0.44.0 
+  - numba=0.61.0 
+  - pydantic=2.11.7 
+  - pydantic-core=2.33.2 
+  - typing-inspection=0.4.1 
+
+  
+  
