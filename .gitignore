@@ -10,6 +10,8 @@
 /.idea/
 /data/fingerprints/train_data/
 /data/fingerprints/split_dataset/
+/answers/fingerprint_features.pickle
+/answers/model*.png
 /answers/log*/
 /notebooks/log*/
 data/dga_decision_tree.pkl
