@@ -7,8 +7,8 @@
 /notebooks/*.pickle
 /answers/*.png 
 /notebooks/*.png 
-/data/fingerprints/split_data
-/data/fingerprings/train_data
+/data/fingerprints/split_data/
+/data/fingerprings/train_data/
 
 
 
