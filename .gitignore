@@ -3,6 +3,12 @@
 /notebooks/*.keras
 /answers/*.keras
 /lite_code_notebooks/*.keras
+/answers/*.pickle
+/notebooks/*.pickle
+/answers/*.png 
+/notebooks/*.png 
+/data/fingerprints/split_data
+/data/fingerprings/train_data
 
 
 
