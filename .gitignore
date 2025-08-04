@@ -1,23 +1,9 @@
 # gtk
 */log_dir/
 /notebooks/*.keras
-/anwers/*.keras
+/answers/*.keras
 /lite_code_notebooks/*.keras
-/venv/
-/notebooks/.ipynb_checkpoints/
-/answers/.ipynb_checkpoints/
-.ipynb_checkpoints/
-/.idea/
-/data/fingerprints/train_data/
-/data/fingerprints/split_dataset/
-/answers/fingerprint_features.pickle
-/answers/model*.png
-/answers/log*/
-/notebooks/log*/
-data/dga_decision_tree.pkl
-data/dga_features_final_df.csv
-data/dga_features_final_df_domain.csv
-data/dga_model*
+
 
 
 # Byte-compiled / optimized / DLL files
