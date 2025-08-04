@@ -9,6 +9,7 @@
 /notebooks/*.png 
 /data/fingerprints/split_data/
 /data/fingerprings/train_data/
+/data/url_data_mega_deep_learning.csv
 
 
 
