@@ -11,7 +11,7 @@
 /data/fingerprings/train_data/
 /data/url_data_mega_deep_learning.csv
 
-
+*.bmp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
